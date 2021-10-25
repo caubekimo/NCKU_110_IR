@@ -1,19 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace HomeWork
 {
@@ -34,7 +23,10 @@ namespace HomeWork
 
             string resultStr = string.Empty;
 
-            string url = @"http://127.0.0.1:5000/GetWordFreq?folder_path=" + this.txtFolderPath.Text;
+            string url = @"http://127.0.0.1:5000/GetWordFreq?folder_path="
+                + this.txtFolderPath.Text
+                //+ this.txtFolderPath.Text.Replace("\\", "/")
+                + "&remove_stop_words=" + (this.cbRemoveStopWords.Checked ? "1" : "0");
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.AutomaticDecompression = DecompressionMethods.GZip;
@@ -64,42 +56,5 @@ namespace HomeWork
                 this.txtFolderPath.Text = this.folderBrowserDialog1.SelectedPath;
             }
         }
-    }
-
-    public class FileContents
-    {
-        public FileContents()
-        {
-            Contents = new List<Content>();
-        }
-
-        public List<Content> Contents
-        {
-            get; set;
-        }
-    }
-
-    public class Content
-    {
-        public Content(ContentType type, string value)
-        {
-            Type = type;
-            Value = value;
-        }
-
-        /// <summary>
-        /// 內容的種類，包含 Title 以及 Abstract
-        /// </summary>
-        public ContentType Type { get; set; }
-        /// <summary>
-        /// 內容的值
-        /// </summary>
-        public string Value { get; set; }
-    }
-
-    public enum ContentType
-    {
-        Title,
-        Abstract
     }
 }

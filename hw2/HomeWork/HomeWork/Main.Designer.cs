@@ -33,6 +33,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnCompare = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.cbRemoveStopWords = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // txtFolderPath
@@ -73,15 +74,27 @@
             this.btnCompare.Name = "btnCompare";
             this.btnCompare.Size = new System.Drawing.Size(189, 66);
             this.btnCompare.TabIndex = 17;
-            this.btnCompare.Text = "Compare";
+            this.btnCompare.Text = "Get Freqs";
             this.btnCompare.UseVisualStyleBackColor = true;
             this.btnCompare.Click += new System.EventHandler(this.btnCompare_Click);
+            // 
+            // cbRemoveStopWords
+            // 
+            this.cbRemoveStopWords.AutoSize = true;
+            this.cbRemoveStopWords.Font = new System.Drawing.Font("微軟正黑體", 14F);
+            this.cbRemoveStopWords.Location = new System.Drawing.Point(607, 132);
+            this.cbRemoveStopWords.Name = "cbRemoveStopWords";
+            this.cbRemoveStopWords.Size = new System.Drawing.Size(266, 34);
+            this.cbRemoveStopWords.TabIndex = 18;
+            this.cbRemoveStopWords.Text = "Remove Stop Words";
+            this.cbRemoveStopWords.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 788);
+            this.Controls.Add(this.cbRemoveStopWords);
             this.Controls.Add(this.btnCompare);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnSelectFile1);
@@ -100,5 +113,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnCompare;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.CheckBox cbRemoveStopWords;
     }
 }
