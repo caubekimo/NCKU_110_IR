@@ -21,6 +21,9 @@ namespace HomeWork
                 return;
             }
 
+            this.chart1.Series["Title"].Points.Clear();
+            this.chart1.Series["Abstract"].Points.Clear();
+
             string resultStr = string.Empty;
 
             string url = @"http://127.0.0.1:5000/GetWordFreq?folder_path="
@@ -38,15 +41,26 @@ namespace HomeWork
                 resultStr = reader.ReadToEnd();
             }
 
-            JToken compareResult = JArray.Parse(resultStr)[0];
-            //double ratio = (double)(compareResult["ratio"]);
-            //int[] longestMatch = compareResult["longestMatch"].ToObject<int[]>();
+            JToken calResult = JArray.Parse(resultStr)[0];
 
-            //this.lblRatio.Text = Math.Round(ratio, 2).ToString();
-            //this.lblLongestLength.Text = longestMatch[2].ToString();
-            //this.txtLongestMatchString.Text = content1.Substring(longestMatch[0], longestMatch[2]);
-            //this.lblLongestMatchPosition1.Text = longestMatch[0].ToString();
-            //this.lblLongestMatchPosition2.Text = longestMatch[1].ToString();
+            foreach (var dist in calResult["titleFdist"])
+            {
+                string[] keyValue = dist.ToString().Split(new string[] { ": " }, StringSplitOptions.None);
+
+                if (int.Parse(keyValue[1]) >= (this.cbRemoveStopWords.Checked ? 500 : 1000))
+                    this.chart1.Series["Title"].Points.AddXY(keyValue[0].Replace("\"", ""), int.Parse(keyValue[1]));
+            }
+
+            foreach (var dist in calResult["absFdist"])
+            {
+                string[] keyValue = dist.ToString().Split(new string[] { ": " }, StringSplitOptions.None);
+
+                if (int.Parse(keyValue[1]) >= (this.cbRemoveStopWords.Checked ? 4000 : 10000))
+                    this.chart1.Series["Abstract"].Points.AddXY(keyValue[0].Replace("\"", ""), int.Parse(keyValue[1]));
+            }
+
+            //this.chart1.ChartAreas[0].AxisX.LabelStyle.Angle = -90;
+            this.chart1.ChartAreas[0].AxisX.LabelStyle.Interval = 1;
         }
 
         private void btnSelectFile1_Click(object sender, EventArgs e)
