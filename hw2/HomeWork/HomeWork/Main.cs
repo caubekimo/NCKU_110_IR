@@ -4,6 +4,9 @@ using System.IO;
 using System.Net;
 using System.Windows.Forms;
 
+/* 某一些字經過正規化(相似字, stemming)之後，被怎麼移動了? */
+/* 怎麼處理 covid 以及 covid-19 這個字? (要當作相同的去處理) */
+
 namespace HomeWork
 {
     public partial class Form1 : Form
