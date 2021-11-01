@@ -25,14 +25,15 @@ namespace HomeWork
             }
 
             this.chart1.Series["Title"].Points.Clear();
-            this.chart1.Series["Abstract"].Points.Clear();
+            this.chart2.Series["Abstract"].Points.Clear();
 
             string resultStr = string.Empty;
 
             string url = @"http://127.0.0.1:5000/GetWordFreq?folder_path="
                 + this.txtFolderPath.Text
                 //+ this.txtFolderPath.Text.Replace("\\", "/")
-                + "&remove_stop_words=" + (this.cbRemoveStopWords.Checked ? "1" : "0");
+                + "&remove_stop_words=" + (this.cbRemoveStopWords.Checked ? "1" : "0")
+                + "&apply_porter_stemming=" + (this.cbApplyPorterStemming.Checked ? "1" : "0");
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.AutomaticDecompression = DecompressionMethods.GZip;
@@ -46,20 +47,32 @@ namespace HomeWork
 
             JToken calResult = JArray.Parse(resultStr)[0];
 
+            int count = 0;
+
             foreach (var dist in calResult["titleFdist"])
             {
-                string[] keyValue = dist.ToString().Split(new string[] { ": " }, StringSplitOptions.None);
+                if (count == int.Parse(this.txtItemNumToShow.Text))
+                {
+                    break;
+                }
 
-                if (int.Parse(keyValue[1]) >= (this.cbRemoveStopWords.Checked ? 500 : 1000))
-                    this.chart1.Series["Title"].Points.AddXY(keyValue[0].Replace("\"", ""), int.Parse(keyValue[1]));
+                string[] keyValue = dist.ToString().Split(new string[] { ": " }, StringSplitOptions.None);
+                this.chart1.Series["Title"].Points.AddXY(keyValue[0].Replace("\"", ""), int.Parse(keyValue[1]));
+                count++;
             }
+
+            count = 0;
 
             foreach (var dist in calResult["absFdist"])
             {
-                string[] keyValue = dist.ToString().Split(new string[] { ": " }, StringSplitOptions.None);
+                if (count == int.Parse(this.txtItemNumToShow.Text))
+                {
+                    break;
+                }
 
-                if (int.Parse(keyValue[1]) >= (this.cbRemoveStopWords.Checked ? 4000 : 10000))
-                    this.chart1.Series["Abstract"].Points.AddXY(keyValue[0].Replace("\"", ""), int.Parse(keyValue[1]));
+                string[] keyValue = dist.ToString().Split(new string[] { ": " }, StringSplitOptions.None);
+                this.chart2.Series["Abstract"].Points.AddXY(keyValue[0].Replace("\"", ""), int.Parse(keyValue[1]));
+                count++;
             }
 
             //this.chart1.ChartAreas[0].AxisX.LabelStyle.Angle = -90;
