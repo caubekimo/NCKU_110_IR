@@ -45,9 +45,11 @@ def TextStat():
         
         # 套用 Porter 演算法
         if apply_porter_stemming:
+            tempWords = []
             stemmer = PorterStemmer()
             for word in titleWords:
-                word = stemmer.stem(word)
+                tempWords.append(stemmer.stem(word))
+            titleWords = tempWords
 
         titleFdist = nltk.FreqDist(titleWords) # 統計字頻
         titleFdist = dict((word, freq) for word, freq in titleFdist.items() if not word.isdigit()) # 去掉數字
@@ -66,9 +68,11 @@ def TextStat():
 
         # 套用 Porter 演算法
         if apply_porter_stemming:
+            tempWords = []
             stemmer = PorterStemmer()
             for word in absWords:
-                word = stemmer.stem(word)
+                tempWords.append(stemmer.stem(word))
+            absWords = tempWords
 
         absFdist = nltk.FreqDist(absWords) # 統計字頻
         absFdist = dict((word, freq) for word, freq in absFdist.items() if not word.isdigit()) # 去掉數字
