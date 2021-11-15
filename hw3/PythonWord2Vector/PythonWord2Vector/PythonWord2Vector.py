@@ -71,7 +71,7 @@ def Word2Vector():
         # 斷句
         sents = []
         for abstract in abstracts:
-            for sent in nltk.tokenize.sent_tokenize(abstract):
+            for sent in nltk.tokenize.sent_tokenize(abstract.lower()):
                 sents.append(sent)
 
         # 斷詞
@@ -79,7 +79,7 @@ def Word2Vector():
         for sent in sents:
             temWords = nltk.tokenize.word_tokenize(sent)
             # 去除標點符號、停用字及數字
-            words.append([word for word in temWords if (not word in nltk_stopwords and not word.isdigit() and not re.fullmatch('[' + string.punctuation + ']+', word))])
+            words.append([word for word in temWords if (not word in nltk_stopwords and not word.isdigit() and (re.match(r'^-?\d+(?:\.\d+)$', word) is None) and not re.fullmatch('[' + string.punctuation + ']+', word))])
 
         model = word2vec.Word2Vec(words, vector_size = 1000, window = 10, min_count = 5, workers = 8, sg = int(use_sg))
         # Save model
