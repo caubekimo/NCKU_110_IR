@@ -15,6 +15,7 @@ from gensim.models import KeyedVectors
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 import numpy as np
+import random
 
 #nltk.download('stopwords') # run once only
 nltk_stopwords = nltk.corpus.stopwords.words('english') # load stop words from NTLK
@@ -36,21 +37,18 @@ def reduce_dimensions(model):
     return x_vals, y_vals, labels
 
 def plot_with_matplotlib(x_vals, y_vals, labels, save_to_fig):
-    import matplotlib.pyplot as plt
-    import random
-
     random.seed(0)
 
-    plt.figure(figsize=(12, 12))
-    plt.scatter(x_vals, y_vals)
+    plt.figure(figsize=(16, 16))
+    plt.scatter(x_vals, y_vals, s=4)
 
     #
     # Label randomly subsampled 1000 data points
     #
     indices = list(range(len(labels)))
-    selected_indices = random.sample(indices, (lambda x: 1000 if (x > 1000) else x)(len(indices)))
+    selected_indices = random.sample(indices, (lambda x: 2500 if (x > 2500) else x)(len(indices)))
     for i in selected_indices:
-        plt.annotate(labels[i], (x_vals[i], y_vals[i]), fontsize=4)
+        plt.annotate(labels[i], (x_vals[i], y_vals[i]), fontsize=2)
 
     plt.savefig(fname=save_to_fig, format='svg')
 
@@ -79,9 +77,11 @@ def Word2Vector():
         for sent in sents:
             temWords = nltk.tokenize.word_tokenize(sent)
             # 去除標點符號、停用字及數字
-            words.append([word for word in temWords if (not word in nltk_stopwords and not word.isdigit() and (re.match(r'^-?\d+(?:\.\d+)$', word) is None) and not re.fullmatch('[' + string.punctuation + ']+', word))])
+            #words.append([word for word in temWords if (not word in nltk_stopwords and not word.isdigit() and (re.match(r'^-?\d+(?:\.\d+)$', word) is None) and not re.fullmatch('[' + string.punctuation + ']+', word))])
+            # 去除標點符號、停用字
+            words.append([word for word in temWords if (not word in nltk_stopwords and (re.match(r'^-?\d+(?:\.\d+)$', word) is None) and not re.fullmatch('[' + string.punctuation + ']+', word))])
 
-        model = word2vec.Word2Vec(words, vector_size = 1000, window = 10, min_count = 5, workers = 8, sg = int(use_sg))
+        model = word2vec.Word2Vec(words, vector_size = 80, window = 30, min_count = 5, workers = 8, sg = int(use_sg))
         # Save model
         model.wv.save_word2vec_format(save_to_model, binary = True)
         print("model 已儲存完畢")
