@@ -143,15 +143,11 @@ def GetEvidence():
         try:
             similarRes = model.most_similar(pattern, topn = 50)
         except:
-            return json.dumps([{'res': None}])
+            return json.dumps([{'wordWeight': None}])
 
         sents = [' '.join(wordArr) for wordArr in wordArrs]
 
-        #vectorizer= CountVectorizer()    
-        #transformer = TfidfTransformer(sublinear_tf=False)
-        #tfidf = transformer.fit_transform(vectorizer.fit_transform(sents))
-
-        vectorizer= TfidfVectorizer(sublinear_tf = (usesublinear == 1), stop_words=None)
+        vectorizer= TfidfVectorizer(sublinear_tf = (usesublinear == '1'), stop_words=None)
         tfidf = vectorizer.fit_transform(sents)
 
         # 所有文件中的所有字的列表 (不取重複字)
