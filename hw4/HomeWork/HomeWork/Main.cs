@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using System.Xml;
@@ -53,7 +54,8 @@ namespace HomeWork
             string url = @"http://127.0.0.1:5000/GetEvidence?"
                 + "corpus_file_path=" + this.txtCorpusFilePath.Text
                 + "&model_file_path=" + this.txtModelFilePath.Text
-                + "&pattern=" + this.txtPattern.Text;
+                + "&pattern=" + this.txtPattern.Text
+                + "&usesublinear=" + (this.cbUseSublinear.Checked ? 1 : 0);
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.AutomaticDecompression = DecompressionMethods.GZip;
@@ -69,12 +71,12 @@ namespace HomeWork
                 var source = new BindingSource();
                 List<SearchResult> list = new List<SearchResult>();
 
-                foreach (var kv in searchResult["res"])
+                foreach (var kv in searchResult["wordWeight"])
                 {
-                    list.Add(new SearchResult() { Word = kv[0].ToString(), Similarity = double.Parse(kv[1].ToString()) });
+                    list.Add(new SearchResult() { Word = kv[0].ToString(), Similarity = double.Parse(kv[1].ToString()), MaxTfidf = double.Parse(kv[2].ToString()), Sentence = kv[3].ToString() });
                 }
 
-                source.DataSource = list;
+                source.DataSource = list.OrderByDescending(x => x.Similarity);
                 this.dataGridView1.DataSource = source;
 
             }
@@ -85,6 +87,7 @@ namespace HomeWork
     {
         public string Word { get; set; }
         public double Similarity { get; set; }
+        public double MaxTfidf { get; set; }
         public string Sentence { get; set; }
     }
 }

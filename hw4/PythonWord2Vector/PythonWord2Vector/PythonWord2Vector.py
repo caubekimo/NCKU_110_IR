@@ -14,9 +14,7 @@ from gensim.models import word2vec
 from gensim.models import KeyedVectors
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
-import numpy as np
 import random
 
 #nltk.download('stopwords') # run once only
@@ -114,15 +112,17 @@ def SimilarWord():
 
 @app.route('/GetEvidence', methods=['GET'])
 def GetEvidence():
-    if 'corpus_file_path' in request.args and 'model_file_path' in request.args and 'pattern' in request.args:
+    if 'corpus_file_path' in request.args and 'model_file_path' in request.args and 'pattern' in request.args and 'usesublinear' in request.args:
         corpus_file_path = request.args['corpus_file_path']
         model_file_path = request.args['model_file_path']
         pattern = request.args['pattern']
+        usesublinear = request.args['usesublinear']
 
         '''讀取檔案的內容'''
         allContent = pd.read_excel(corpus_file_path)
 
-        abstracts = allContent['Abstract'].dropna().values.tolist()[:200]
+        #abstracts = allContent['Abstract'].dropna().values.tolist()
+        abstracts = allContent['Abstract'].dropna().values.tolist()[:100]
 
         '''處理 abstract'''
         # 斷句
@@ -151,7 +151,7 @@ def GetEvidence():
         #transformer = TfidfTransformer(sublinear_tf=False)
         #tfidf = transformer.fit_transform(vectorizer.fit_transform(sents))
 
-        vectorizer= TfidfVectorizer(sublinear_tf=False, stop_words=None)
+        vectorizer= TfidfVectorizer(sublinear_tf = (usesublinear == 1), stop_words=None)
         tfidf = vectorizer.fit_transform(sents)
 
         # 所有文件中的所有字的列表 (不取重複字)
@@ -161,14 +161,23 @@ def GetEvidence():
         weight = tfidf.toarray()
 
         # 將 Tfidf 中的每個字，與相似字中的字做比對，找出相似字的 idf 權重是多少
-        similarWords = [arr[0] for arr in similarRes]
+        stemmer = PorterStemmer()
+        stemSimilarWords = [stemmer.stem(arr[0]) for arr in similarRes]
         wordWeight = []
 
-        for i in range(len(wordFeatures)):
-            if wordFeatures[i] in similarWords:
-                wordWeight.append((wordFeatures[i], [res[1] for res in similarRes if res[0] == wordFeatures[i]][0], np.max(weight[i:]), sents[np.where(weight[i:] == np.max(weight[i:]))[0][0]]))
+        forLen = len(wordFeatures)
 
-        # 4507 字、306 句子、200 文件
+        for i in range(0, forLen):
+            wordFeature = wordFeatures[i]
+            if stemmer.stem(wordFeature) in stemSimilarWords:
+                maxTfidf = np.max(weight[:i])
+                maxSent = sents[np.where(weight[:i] == np.max(weight[:i]))[0][0]]
+                print(i, maxTfidf, maxSent, weight[:i], np.where(weight[:i] == np.max(weight[:i]))[0][0])
+                wordWeight.append((wordFeature, [res[1] for res in similarRes if stemmer.stem(res[0]) == stemmer.stem(wordFeatures[i])][0], maxTfidf, maxSent))
+            else:
+                wordWeight = wordWeight
+        return json.dumps([{'wordWeight': wordWeight}])
+        # 3069 字、756 句子
         """debug"""
 
         #try:

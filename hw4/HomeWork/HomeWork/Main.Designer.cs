@@ -43,6 +43,7 @@
             this.btnSearch = new System.Windows.Forms.Button();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.cbUseSublinear = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -168,14 +169,26 @@
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 27;
-            this.dataGridView1.Size = new System.Drawing.Size(1202, 639);
+            this.dataGridView1.Size = new System.Drawing.Size(1740, 726);
             this.dataGridView1.TabIndex = 25;
+            // 
+            // cbUseSublinear
+            // 
+            this.cbUseSublinear.AutoSize = true;
+            this.cbUseSublinear.Font = new System.Drawing.Font("微軟正黑體", 14F);
+            this.cbUseSublinear.Location = new System.Drawing.Point(684, 245);
+            this.cbUseSublinear.Name = "cbUseSublinear";
+            this.cbUseSublinear.Size = new System.Drawing.Size(315, 34);
+            this.cbUseSublinear.TabIndex = 26;
+            this.cbUseSublinear.Text = "replace tf with 1 + log(tf)";
+            this.cbUseSublinear.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1281, 948);
+            this.ClientSize = new System.Drawing.Size(1769, 1023);
+            this.Controls.Add(this.cbUseSublinear);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.txtPattern);
@@ -210,5 +223,6 @@
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.CheckBox cbUseSublinear;
     }
 }
